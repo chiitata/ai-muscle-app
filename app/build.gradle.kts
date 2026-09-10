@@ -47,12 +47,6 @@ android {
         jvmTarget = "11"
     }
 
-    kapt {
-        arguments {
-            arg("room.schemaLocation", "$projectDir/schemas")
-        }
-    }
-
     buildFeatures {
         compose = true
     }
@@ -77,6 +71,7 @@ dependencies {
     // Jetpack
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
     kapt(libs.androidx.room.compiler)
 
     // TensorFlow Lite

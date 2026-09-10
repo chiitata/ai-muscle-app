@@ -15,7 +15,8 @@ import com.example.aimuscle.data.models.TemplateExercise
         ExerciseTemplate::class,
         TemplateExercise::class
     ],
-    version = 1
+    version = 1,
+    exportSchema = false
 )
 @TypeConverters(LocalDateTimeConverter::class, LocalDateConverter::class)
 abstract class AppDatabase : RoomDatabase() {
