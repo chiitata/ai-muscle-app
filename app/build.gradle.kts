@@ -47,6 +47,12 @@ android {
         jvmTarget = "11"
     }
 
+    kapt {
+        arguments {
+            arg("room.schemaLocation", "$projectDir/schemas")
+        }
+    }
+
     buildFeatures {
         compose = true
     }
@@ -75,7 +81,7 @@ dependencies {
 
     // TensorFlow Lite
     implementation(libs.tensorflow.lite)
-    implementation(libs.tensorflow.lite.select)
+    // implementation(libs.tensorflow.lite.select) // Optional, may not be available
 
     // Testing
     testImplementation(libs.junit)

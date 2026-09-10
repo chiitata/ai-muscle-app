@@ -14,7 +14,7 @@ interface WorkoutSessionDao {
     suspend fun insert(session: WorkoutSession): Long
 
     @Update
-    suspend fun update(session: WorkoutSession)
+    suspend fun update(session: WorkoutSession): Int
 
     @Delete
     suspend fun delete(session: WorkoutSession)

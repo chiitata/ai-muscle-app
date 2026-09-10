@@ -13,7 +13,7 @@ interface ExerciseTemplateDao {
     suspend fun insert(template: ExerciseTemplate): Long
 
     @Update
-    suspend fun update(template: ExerciseTemplate)
+    suspend fun update(template: ExerciseTemplate): Int
 
     @Delete
     suspend fun delete(template: ExerciseTemplate)

@@ -13,7 +13,7 @@ interface WorkoutExerciseDao {
     suspend fun insert(exercise: WorkoutExercise): Long
 
     @Update
-    suspend fun update(exercise: WorkoutExercise)
+    suspend fun update(exercise: WorkoutExercise): Int
 
     @Delete
     suspend fun delete(exercise: WorkoutExercise)

@@ -13,7 +13,7 @@ interface TemplateExerciseDao {
     suspend fun insert(exercise: TemplateExercise): Long
 
     @Update
-    suspend fun update(exercise: TemplateExercise)
+    suspend fun update(exercise: TemplateExercise): Int
 
     @Delete
     suspend fun delete(exercise: TemplateExercise)

@@ -4,7 +4,7 @@ kotlin = "1.9.0"
 compose = "1.5.0"
 material3 = "1.0.0"
 activity-compose = "1.7.0"
-lifecycle-viewmodel-compose = "2.6.0"
+lifecycle = "2.6.0"
 room = "2.5.0"
 tensorflow-lite = "2.12.0"
 junit = "4.13.2"
@@ -12,6 +12,7 @@ compose-ui-test = "1.5.0"
 androidx-test = "1.5.0"
 mockito = "5.3.1"
 mockito-kotlin = "5.1.0"
+coroutines = "1.7.0"
 
 [libraries]
 # Compose UI
@@ -20,7 +21,8 @@ androidx-compose-material3 = { module = "androidx.compose.material3:material3", 
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activity-compose" }
 
 # Jetpack
-androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle-viewmodel-compose" }
+androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle" }
+androidx-lifecycle-runtime = { module = "androidx.lifecycle:lifecycle-runtime", version.ref = "lifecycle" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 androidx-room-testing = { module = "androidx.room:room-testing", version.ref = "room" }
@@ -28,6 +30,9 @@ androidx-room-testing = { module = "androidx.room:room-testing", version.ref = "
 # TensorFlow Lite
 tensorflow-lite = { module = "org.tensorflow:tensorflow-lite", version.ref = "tensorflow-lite" }
 tensorflow-lite-select = { module = "org.tensorflow:tensorflow-lite-select", version.ref = "tensorflow-lite" }
+
+# Coroutines
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
 
 # Testing
 junit = { module = "junit:junit", version.ref = "junit" }
