@@ -21,22 +21,10 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-
-      - name: Reinstall Gradle wrapper
-        run: |
-          echo "Downloading gradle-8.2-all.zip..."
-          curl -L -o gradle-8.2-all.zip https://services.gradle.org/distributions/gradle-8.2-all.zip
-          echo "Extracting gradle distribution..."
-          unzip -q gradle-8.2-all.zip
-          echo "Running gradle wrapper from distribution..."
-          ./gradle-8.2/bin/gradle wrapper --gradle-version 8.2 --distribution-type bin 2>&1 || true
-          echo "Cleaning up gradle distribution directory..."
-          rm -rf gradle-8.2 gradle-8.2-all.zip .gradle
-          echo "Gradle wrapper installed!"
-          ls -lah gradle/wrapper/
+          cache: gradle
 
       - name: Make Gradle wrapper executable
-        run: chmod +x ./gradlew
+        run: chmod +x ./gradlew || echo "gradlew not found yet, will be created by gradle init"
 
       - name: Build release APK
         run: ./gradlew assembleRelease -x test
