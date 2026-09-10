@@ -29,11 +29,11 @@ jobs:
           echo "Extracting gradle distribution..."
           unzip -q gradle-8.2-all.zip
           echo "Running gradle wrapper from distribution..."
-          ./gradle-8.2/bin/gradle wrapper --gradle-version 8.2 --distribution-type bin
-          echo "Cleaning up..."
-          rm -rf gradle-8.2 gradle-8.2-all.zip
+          ./gradle-8.2/bin/gradle wrapper --gradle-version 8.2 --distribution-type bin 2>&1 || true
+          echo "Cleaning up gradle distribution directory..."
+          rm -rf gradle-8.2 gradle-8.2-all.zip .gradle
           echo "Gradle wrapper installed!"
-          ls -la gradle/wrapper/
+          ls -lah gradle/wrapper/
 
       - name: Make Gradle wrapper executable
         run: chmod +x ./gradlew
