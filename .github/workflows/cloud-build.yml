@@ -1,4 +1,4 @@
-name: Cloud Build Pipeline
+name: Android Build Pipeline
 
 on:
   push:
@@ -16,64 +16,34 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v2
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
         with:
-          credentials_json: ${{ secrets.GCP_SA_KEY }}
+          java-version: '17'
+          distribution: 'temurin'
 
-      - name: Set up Google Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
+      - name: Make Gradle wrapper executable
+        run: chmod +x ./gradlew
 
-      - name: Trigger Cloud Build
-        run: |
-          gcloud builds submit \
-            --config=cloudbuild.yaml \
-            --project=${{ secrets.GCP_PROJECT_ID }} \
-            --substitutions=_PROJECT_ID=${{ secrets.GCP_PROJECT_ID }}
-
-      - name: Wait for build to complete
-        run: |
-          BUILD_ID=$(gcloud builds list \
-            --project=${{ secrets.GCP_PROJECT_ID }} \
-            --limit=1 \
-            --format='value(id)' \
-            --filter='status!="QUEUED"')
-
-          gcloud builds log $BUILD_ID \
-            --project=${{ secrets.GCP_PROJECT_ID }} \
-            --stream
-
-      - name: Check build status
-        run: |
-          BUILD_STATUS=$(gcloud builds list \
-            --project=${{ secrets.GCP_PROJECT_ID }} \
-            --limit=1 \
-            --format='value(status)')
-
-          if [ "$BUILD_STATUS" != "SUCCESS" ]; then
-            echo "Build failed with status: $BUILD_STATUS"
-            exit 1
-          fi
-
-      - name: Download APK from Cloud Storage
-        run: |
-          gsutil cp gs://${{ secrets.GCP_PROJECT_ID }}-ai-muscle-app/builds/app-release.apk ./
-          ls -lh app-release.apk
+      - name: Build release APK
+        run: ./gradlew assembleRelease -x test
 
       - name: Upload APK as artifact
         uses: actions/upload-artifact@v4
         with:
           name: app-release.apk
-          path: app-release.apk
+          path: app/build/outputs/apk/release/app-release.apk
 
-      - name: Post build status to Buzz
+      - name: List build outputs
         if: always()
+        run: ls -lh app/build/outputs/apk/release/
+
+      - name: Build success notification
+        if: success()
+        run: echo "✅ APK build successful!"
+
+      - name: Build failure notification
+        if: failure()
         run: |
-          STATUS=${{ job.status }}
-          curl -X POST https://your-buzz-instance/api/messages \
-            -H "Authorization: Bearer ${{ secrets.BUZZ_TOKEN }}" \
-            -H "Content-Type: application/json" \
-            -d "{
-              \"channel\": \"${{ secrets.BUZZ_CHANNEL_ID }}\",
-              \"content\": \"Build $STATUS: APK ready in artifacts\"
-            }" || true
+          echo "❌ Build failed"
+          exit 1
