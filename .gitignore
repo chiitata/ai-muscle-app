@@ -1,0 +1,60 @@
+# Gradle files
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
+
+# IDE
+.idea/
+*.iml
+*.iws
+*.ipr
+.DS_Store
+.vscode/
+*.swp
+*.swo
+
+# Local properties
+local.properties
+
+# Build outputs
+bin/
+gen/
+out/
+
+# Signing
+*.jks
+*.keystore
+*.p12
+*.pfx
+
+# Captured logs
+captures/
+.cxx/
+
+# Lint results
+lint-results*.xml
+lint-results*.html
+
+# Test reports
+testResults.xml
+
+# Android build artifacts
+*.apk
+*.ap_
+*.aab
+*.dex
+*.class
+*.jar
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Python bytecode
+*.pyc
+__pycache__/
+
+# Environment
+.env
+.env.local

@@ -1,0 +1,53 @@
+[versions]
+agp = "8.1.0"
+kotlin = "1.9.0"
+compose = "1.5.0"
+material3 = "1.0.0"
+activity-compose = "1.7.0"
+lifecycle-viewmodel-compose = "2.6.0"
+room = "2.5.0"
+tensorflow-lite = "2.12.0"
+junit = "4.13.2"
+compose-ui-test = "1.5.0"
+
+[libraries]
+# Compose UI
+androidx-compose-ui = { module = "androidx.compose.ui:ui", version.ref = "compose" }
+androidx-compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activity-compose" }
+
+# Jetpack
+androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle-viewmodel-compose" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+androidx-room-testing = { module = "androidx.room:room-testing", version.ref = "room" }
+
+# TensorFlow Lite
+tensorflow-lite = { module = "org.tensorflow:tensorflow-lite", version.ref = "tensorflow-lite" }
+tensorflow-lite-select = { module = "org.tensorflow:tensorflow-lite-select", version.ref = "tensorflow-lite" }
+
+# Testing
+junit = { module = "junit:junit", version.ref = "junit" }
+androidx-compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "compose-ui-test" }
+
+[bundles]
+compose = [
+    "androidx-compose-ui",
+    "androidx-compose-material3",
+    "androidx-activity-compose"
+]
+jetpack = [
+    "androidx-lifecycle-viewmodel-compose",
+    "androidx-room-runtime"
+]
+tensorflow = [
+    "tensorflow-lite",
+    "tensorflow-lite-select"
+]
+testing = [
+    "junit"
+]
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
