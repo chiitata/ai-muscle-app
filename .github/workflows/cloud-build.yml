@@ -29,11 +29,16 @@ jobs:
           echo "Downloading Gradle wrapper..."
           curl -L -o gradle-8.2-bin.zip https://services.gradle.org/distributions/gradle-8.2-bin.zip
           echo "Extracting..."
-          unzip -q gradle-8.2-bin.zip || exit 1
+          unzip -q gradle-8.2-bin.zip
+          echo "Listing extracted files..."
+          ls -la
+          echo "Searching for gradle-wrapper.jar..."
+          find . -name "gradle-wrapper.jar" -type f
           echo "Copying wrapper jar..."
-          cp gradle-8.2/lib/gradle-wrapper.jar . || exit 1
-          rm -rf gradle-8.2 gradle-8.2-bin.zip
+          find . -name "gradle-wrapper.jar" -type f -exec cp {} . \;
+          rm -rf gradle-8.2* *.zip
           echo "Done!"
+          ls -la
           cd ../..
 
       - name: Make Gradle wrapper executable
