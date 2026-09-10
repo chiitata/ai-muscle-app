@@ -27,14 +27,13 @@ jobs:
           mkdir -p gradle/wrapper
           cd gradle/wrapper
           echo "Downloading Gradle wrapper..."
-          wget https://repo.gradle.org/gradle/distributions/gradle-8.2-bin.zip || (echo "wget failed, trying curl" && curl -L -o gradle-8.2-bin.zip https://repo.gradle.org/gradle/distributions/gradle-8.2-bin.zip)
+          curl -L -o gradle-8.2-bin.zip https://services.gradle.org/distributions/gradle-8.2-bin.zip
           echo "Extracting..."
-          unzip gradle-8.2-bin.zip || exit 1
+          unzip -q gradle-8.2-bin.zip || exit 1
           echo "Copying wrapper jar..."
-          ls -la gradle-8.2/lib/
           cp gradle-8.2/lib/gradle-wrapper.jar . || exit 1
           rm -rf gradle-8.2 gradle-8.2-bin.zip
-          ls -la
+          echo "Done!"
           cd ../..
 
       - name: Make Gradle wrapper executable
