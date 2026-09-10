@@ -1,0 +1,78 @@
+name: Cloud Build Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+
+      - name: Trigger Cloud Build
+        run: |
+          gcloud builds submit \
+            --config=cloudbuild.yaml \
+            --project=${{ secrets.GCP_PROJECT_ID }} \
+            --substitutions=_PROJECT_ID=${{ secrets.GCP_PROJECT_ID }}
+
+      - name: Wait for build to complete
+        run: |
+          BUILD_ID=$(gcloud builds list \
+            --project=${{ secrets.GCP_PROJECT_ID }} \
+            --limit=1 \
+            --format='value(id)' \
+            --filter='status!="QUEUED"')
+
+          gcloud builds log $BUILD_ID \
+            --project=${{ secrets.GCP_PROJECT_ID }} \
+            --stream
+
+      - name: Check build status
+        run: |
+          BUILD_STATUS=$(gcloud builds list \
+            --project=${{ secrets.GCP_PROJECT_ID }} \
+            --limit=1 \
+            --format='value(status)')
+
+          if [ "$BUILD_STATUS" != "SUCCESS" ]; then
+            echo "Build failed with status: $BUILD_STATUS"
+            exit 1
+          fi
+
+      - name: Download APK from Cloud Storage
+        run: |
+          gsutil cp gs://${{ secrets.GCP_PROJECT_ID }}-ai-muscle-app/builds/app-release.apk ./
+          ls -lh app-release.apk
+
+      - name: Upload APK as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-release.apk
+          path: app-release.apk
+
+      - name: Post build status to Buzz
+        if: always()
+        run: |
+          STATUS=${{ job.status }}
+          curl -X POST https://your-buzz-instance/api/messages \
+            -H "Authorization: Bearer ${{ secrets.BUZZ_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"channel\": \"${{ secrets.BUZZ_CHANNEL_ID }}\",
+              \"content\": \"Build $STATUS: APK ready in artifacts\"
+            }" || true

@@ -1,0 +1,72 @@
+steps:
+  # Step 1: Set up build environment
+  - name: 'gcr.io/cloud-builders/gke-deploy'
+    id: 'setup-env'
+    args:
+      - 'run'
+      - '--'
+      - 'echo "Setting up Android build environment"'
+
+  # Step 2: Download Android SDK components
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'build-apk'
+    args:
+      - 'run'
+      - '--rm'
+      - '-v'
+      - '/workspace:/workspace'
+      - '-w'
+      - '/workspace'
+      - 'android:34'
+      - '/bin/sh'
+      - '-c'
+      - |
+        echo "Installing Android SDK components..."
+        yes | sdkmanager --licenses > /dev/null 2>&1
+        sdkmanager "platforms;android-34" "build-tools;34.0.0" > /dev/null 2>&1
+
+        echo "Building APK..."
+        export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+        export PATH=$JAVA_HOME/bin:$PATH
+        ./gradlew clean assembleRelease -x test
+
+        echo "Build complete!"
+
+  # Step 3: Upload APK to Cloud Storage
+  - name: 'gcr.io/cloud-builders/gsutil'
+    id: 'upload-apk'
+    args:
+      - 'cp'
+      - 'app/build/outputs/apk/release/app-release.apk'
+      - 'gs://${PROJECT_ID}-ai-muscle-app/builds/'
+
+  # Step 4: Generate build report
+  - name: 'gcr.io/cloud-builders/gke-deploy'
+    id: 'generate-report'
+    args:
+      - 'run'
+      - '--'
+      - 'echo "Build completed successfully"'
+
+# Configure build options
+options:
+  machineType: 'N1_HIGHCPU_8'
+  logging: CLOUD_LOGGING_ONLY
+
+# Configure images to be pushed to Container Registry
+images: []
+
+# Timeout for build (1 hour)
+timeout: '3600s'
+
+# Substitution variables
+substitutions:
+  _GRADLE_WRAPPER_VERSION: '8.2'
+
+# Archive APK for inspection
+artifacts:
+  objects:
+    location: 'gs://${PROJECT_ID}-ai-muscle-app/builds/'
+    paths:
+      - 'app/build/outputs/apk/release/app-release.apk'
+      - 'app/build/outputs/bundle/release/app-release.aab'
