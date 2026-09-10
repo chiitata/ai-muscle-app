@@ -22,24 +22,18 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Download Gradle wrapper jar
+      - name: Reinstall Gradle wrapper
         run: |
-          mkdir -p gradle/wrapper
-          cd gradle/wrapper
-          echo "Downloading Gradle wrapper..."
-          curl -L -o gradle-8.2-bin.zip https://services.gradle.org/distributions/gradle-8.2-bin.zip
-          echo "Extracting..."
-          unzip -q gradle-8.2-bin.zip
-          echo "Listing extracted files..."
-          ls -la
-          echo "Searching for gradle-wrapper.jar..."
-          find . -name "gradle-wrapper.jar" -type f
-          echo "Copying wrapper jar..."
-          find . -name "gradle-wrapper.jar" -type f -exec cp {} . \;
-          rm -rf gradle-8.2* *.zip
-          echo "Done!"
-          ls -la
-          cd ../..
+          echo "Downloading gradle-8.2-all.zip..."
+          curl -L -o gradle-8.2-all.zip https://services.gradle.org/distributions/gradle-8.2-all.zip
+          echo "Extracting gradle distribution..."
+          unzip -q gradle-8.2-all.zip
+          echo "Running gradle wrapper from distribution..."
+          ./gradle-8.2/bin/gradle wrapper --gradle-version 8.2 --distribution-type bin
+          echo "Cleaning up..."
+          rm -rf gradle-8.2 gradle-8.2-all.zip
+          echo "Gradle wrapper installed!"
+          ls -la gradle/wrapper/
 
       - name: Make Gradle wrapper executable
         run: chmod +x ./gradlew
