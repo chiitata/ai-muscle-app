@@ -8,12 +8,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
-import com.example.aimuscle.data.models.ExerciseTemplate
-import com.example.aimuscle.di.AppModule
 import com.example.aimuscle.presentation.screens.HistoryScreen
 import com.example.aimuscle.presentation.screens.HomeScreen
 import com.example.aimuscle.presentation.screens.InputScreen
@@ -28,7 +25,6 @@ import com.example.aimuscle.presentation.viewmodels.ViewModelFactory
 import com.example.aimuscle.ui.navigation.AppNavigation
 import com.example.aimuscle.ui.theme.AIMuscleTheme
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 /**
