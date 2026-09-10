@@ -71,7 +71,7 @@ class TFLiteModel(private val modelPath: String? = null) {
 
         return when {
             // Perfect match with exact case
-            normalInput == exerciseName -> 0.95f
+            normalizedInput == exerciseName -> 0.95f
 
             // Input contains exercise name directly
             normalizedInput.contains(normalizedExercise) -> 0.90f

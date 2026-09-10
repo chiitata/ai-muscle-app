@@ -372,4 +372,109 @@ class NLPEngineTest {
         val result3 = nlpEngine.parse("10, pushups")
         assertNotNull(result3)
     }
+
+    // ======================== Additional Edge Case Tests ========================
+
+    @Test
+    fun testNLPEngine_EmptyInput() {
+        val result = nlpEngine.parse("")
+        assertNull("Should return null for empty string", result)
+    }
+
+    @Test
+    fun testNLPEngine_NullSafetyForSpecialChars() {
+        val result1 = nlpEngine.parse("10 @#$%^&*")
+        assertNull("Should return null for input with only special chars", result1)
+
+        val result2 = nlpEngine.parse("10 !!! pushups !!!")
+        assertNotNull("Should handle mixed special chars", result2)
+    }
+
+    @Test
+    fun testTFLiteModel_ConfidenceScore_EmptyExercise() {
+        val model = TFLiteModel()
+        val score = model.getConfidenceScore("", "random input")
+        assertTrue("Score should be between 0 and 1 for empty exercise", score in 0.0f..1.0f)
+    }
+
+    @Test
+    fun testTFLiteModel_ConfidenceScore_EmptyInput() {
+        val model = TFLiteModel()
+        val score = model.getConfidenceScore("pushup", "")
+        assertTrue("Score should be between 0 and 1 for empty input", score in 0.0f..1.0f)
+    }
+
+    @Test
+    fun testTFLiteModel_ConfidenceScore_MalformedInput() {
+        val model = TFLiteModel()
+        val score = model.getConfidenceScore("pushup", "!@#$%^&*()")
+        assertTrue("Score should be between 0 and 1 for malformed input", score in 0.0f..1.0f)
+    }
+
+    @Test
+    fun testPatternExtractor_ExtractReps_MalformedInput() {
+        assertNull(PatternExtractor.extractReps("abc reps"))
+        assertNull(PatternExtractor.extractReps("reps abc"))
+        assertNull(PatternExtractor.extractReps(""))
+    }
+
+    @Test
+    fun testPatternExtractor_ExtractWeight_MalformedInput() {
+        assertNull(PatternExtractor.extractWeight("abc lbs"))
+        assertNull(PatternExtractor.extractWeight("lbs"))
+        assertNull(PatternExtractor.extractWeight(""))
+    }
+
+    @Test
+    fun testNLPEngine_ParseWithMixedCase() {
+        val result = nlpEngine.parse("10 PuShUpS")
+        assertNotNull(result)
+        assertEquals("pushup", result?.exercises?.get(0)?.name)
+    }
+
+    @Test
+    fun testNLPEngine_ParseExerciseWithLeadingTrailingSpaces() {
+        val result = nlpEngine.parse("   10 pushups   ")
+        assertNotNull(result)
+        assertEquals("pushup", result?.exercises?.get(0)?.name)
+        assertEquals(10, result?.exercises?.get(0)?.reps)
+    }
+
+    @Test
+    fun testNLPEngine_FailureCase_NonsenseInput() {
+        val result = nlpEngine.parse("xyzabc123 !@#$%")
+        assertNull("Should return null for complete nonsense input", result)
+    }
+
+    @Test
+    fun testNLPEngine_FailureCase_NoExerciseButReps() {
+        val result = nlpEngine.parse("10 reps")
+        assertNull("Should return null when no exercise name provided", result)
+    }
+
+    @Test
+    fun testNLPEngine_FailureCase_WeightOnly() {
+        val result = nlpEngine.parse("185 lbs")
+        assertNull("Should return null for weight without exercise", result)
+    }
+
+    @Test
+    fun testWorkoutDictionary_NormalizeExerciseName_EdgeCases() {
+        assertEquals("pushup", WorkoutDictionary.normalizeExerciseName("   push up   "))
+        assertEquals("benchpress", WorkoutDictionary.normalizeExerciseName("BENCH PRESS"))
+    }
+
+    @Test
+    fun testTFLiteModel_NullModelPath() {
+        val model = TFLiteModel(null)
+        val score = model.getConfidenceScore("pushup", "pushup")
+        assertEquals(0.95f, score, 0.01f)
+    }
+
+    @Test
+    fun testTFLiteModel_BlankModelPath() {
+        val model = TFLiteModel("")
+        val score = model.getConfidenceScore("pushup", "pushup")
+        assertEquals(0.95f, score, 0.01f)
+    }
 }
