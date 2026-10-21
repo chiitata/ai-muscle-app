@@ -1,4 +1,7 @@
-export default function AppReturn() {
+type Props = { searchParams: Promise<{ session_id?: string }> };
+
+export default async function AppReturn({ searchParams }: Props) {
+  const { session_id } = await searchParams;
   return (
     <main style={{ padding: "64px 16px", textAlign: "center" }}>
       <div style={{ fontSize: 56 }}>✅</div>
@@ -8,6 +11,11 @@ export default function AppReturn() {
         <br />
         反映されない場合はアプリを再起動してください。
       </p>
+      {session_id && (
+        <p style={{ fontSize: 12, color: "#9ca3af", marginTop: 8 }}>
+          セッション: {session_id.slice(0, 24)}…
+        </p>
+      )}
       <p style={{ marginTop: 32 }}>
         <a
           href="studyai://return"
