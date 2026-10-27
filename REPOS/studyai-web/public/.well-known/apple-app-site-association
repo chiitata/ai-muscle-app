@@ -5,6 +5,10 @@
       {
         "appID": "6MZBUNDJGM.com.studyai.askoo",
         "paths": ["/app/*", "/auth/callback"]
+      },
+      {
+        "appID": "6MZBUNDJGM.com.studyai.askoo.staging",
+        "paths": ["/app/*", "/auth/callback"]
       }
     ]
   }
